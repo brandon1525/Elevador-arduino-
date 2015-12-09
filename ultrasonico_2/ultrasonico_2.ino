@@ -1,5 +1,5 @@
-int disparo = 9;
-int eco = 8;
+int disparo = 8;
+int eco = 9;
 unsigned long duracion; // se utilizan datos long debido a la respuesta del ultrasonido
 float pulgadas, cm;
 int IN3 = 5;    // Input3 conectada al pin 5
@@ -7,8 +7,10 @@ int IN4 = 4;    // Input4 conectada al pin 4
 int ENB = 3;    // ENB conectada al pin 3 de Arduino
 int estado=1;
 int PWM_valor=0;
-const float Kp=8,Ki=.8,Kd=1.5;// son constantes pero flotantes y esas hay que estarlas moviendo para sintonizar el PID
+//Pues ki menor que 1 Kd menor a 2 y kp menor a 15
+const float Kp=4.4,Ki=.3,Kd=1;// son constantes pero flotantes y esas hay que estarlas moviendo para sintonizar el PID
 float error_ant,error=1,error_p,error_i,error_d;
+int motor_estable=170;
 
 void setup()
 {
@@ -40,9 +42,10 @@ void loop()
         Serial.print("Posicion actual ");
         Serial.println(posicion);
         Serial.println("");
-        boolean si=ajustar_posicion(posicion,estado);
+        ajustar_posicion(posicion,estado);
       }else if(estado==0){
         Serial.println("Saliendo del ciclo infinito");
+        break;
       }else{
         Serial.println("Opcion no valida");
       }
@@ -71,23 +74,23 @@ float msCentimetros(long microsegundos){
   return ( (float)microsegundos / (29.0 * 2.0) );
 }
 
-boolean ajustar_posicion(float posicion_inicial,int piso){
+void ajustar_posicion(float posicion_inicial,int piso){
   Serial.println("***************Entrando a ajustar_posicion***************************");
   Serial.print("=>POSICION ");
   Serial.println(posicion_inicial);
   Serial.print("=>PISO ");
   Serial.println(piso);
-  error=error+1;
+  error=0;
   Serial.print("=>ERROR ");
   Serial.println(error);
   switch(piso){
     case 1:
-      while((int)error!=0){
-        Serial.println("-------------------------Ciclo error diferente de 0-----------------------");
+      while(true){
+        Serial.println("-------------------------Ciclo hasta que llegue al piso-----------------------");
         Serial.print("Error = ");
         Serial.println(error);
         error_ant=error;
-        error = 2.88 - Obtener_Posicion();
+        error = 45.60 - Obtener_Posicion();
         error_p = Kp*error;
         error_i = Ki*error + error_i;
         error_d = Kd*(error-error_ant);
@@ -104,29 +107,34 @@ boolean ajustar_posicion(float posicion_inicial,int piso){
         Serial.println(error_d);
         Serial.print("PWM VALOR ");
         Serial.println(PWM_valor);
-        delay(5000);
         if(error>0){
-          Serial.println("AJUSTANDO SUBIENDO");
-          //subir
+          println("S U B I E N D O");
+        }else{
+          println("B A J A N D O");
         }
-        if(error<0){
-          Serial.println("AJUSTANDO BAJANDO");
-          //bajar
-        }
+        Ajuste_motor(PWM_valor);
+        delay(300);
+        digitalWrite (IN3, HIGH);
+        digitalWrite (IN4, LOW);
+        analogWrite(ENB,motor_estable);
         if((int)error==0){
           Serial.println("AJUSTADO");
+          digitalWrite (IN3, HIGH);
+          digitalWrite (IN4, LOW);
+          analogWrite(ENB,motor_estable);
+          break;
         }
         Serial.print("/////////////////////Errror a comparara/////////////////////////////// ");
         Serial.println(error,4);
       }
     break;
     case 2:
-      while((int)error!=0){
+      while(true){
         Serial.println("-------------------------Ciclo error diferente de 0-----------------------");
         Serial.print("Error = ");
         Serial.println(error);
         error_ant=error;
-        error = 13.33 - Obtener_Posicion();
+        error = 31.98 - Obtener_Posicion();
         error_p = Kp*error;
         error_i = Ki*error + error_i;
         error_d = Kd*(error-error_ant);
@@ -143,29 +151,34 @@ boolean ajustar_posicion(float posicion_inicial,int piso){
         Serial.println(error_d);
         Serial.print("PWM VALOR ");
         Serial.println(PWM_valor);
-        delay(5000);
         if(error>0){
-          Serial.println("AJUSTANDO SUBIENDO");
-          //subir
+          println("S U B I E N D O");
+        }else{
+          println("B A J A N D O");
         }
-        if(error<0){
-          Serial.println("AJUSTANDO BAJANDO");
-          //bajar
-        }
+        Ajuste_motor(PWM_valor);
+        delay(300);
+        digitalWrite (IN3, HIGH);
+        digitalWrite (IN4, LOW);
+        analogWrite(ENB,motor_estable);
         if((int)error==0){
           Serial.println("AJUSTADO");
+          digitalWrite (IN3, HIGH);
+          digitalWrite (IN4, LOW);
+          analogWrite(ENB,motor_estable);
+          break;
         }
         Serial.print("/////////////////////Errror a comparara/////////////////////////////// ");
         Serial.println(error,4);
       }
     break;
     case 3:
-      while((int)error!=0){
+      while(true){
         Serial.println("-------------------------Ciclo error diferente de 0-----------------------");
         Serial.print("Error = ");
         Serial.println(error);
         error_ant=error;
-        error = 25.03 - Obtener_Posicion();
+        error = 20.98 - Obtener_Posicion();
         error_p = Kp*error;
         error_i = Ki*error + error_i;
         error_d = Kd*(error-error_ant);
@@ -182,29 +195,34 @@ boolean ajustar_posicion(float posicion_inicial,int piso){
         Serial.println(error_d);
         Serial.print("PWM VALOR ");
         Serial.println(PWM_valor);
-        delay(5000);
         if(error>0){
-          Serial.println("AJUSTANDO SUBIENDO");
-          //subir
+          println("S U B I E N D O");
+        }else{
+          println("B A J A N D O");
         }
-        if(error<0){
-          Serial.println("AJUSTANDO BAJANDO");
-          //bajar
-        }
+        Ajuste_motor(PWM_valor);
+        delay(300);
+        digitalWrite (IN3, HIGH);
+        digitalWrite (IN4, LOW);
+        analogWrite(ENB,motor_estable);
         if((int)error==0){
           Serial.println("AJUSTADO");
+          digitalWrite (IN3, HIGH);
+          digitalWrite (IN4, LOW);
+          analogWrite(ENB,motor_estable);
+          break;
         }
         Serial.print("/////////////////////Errror a comparara/////////////////////////////// ");
         Serial.println(error,4);
       }
     break;
     case 4:
-      while((int)error!=0){
+      while(true){
         Serial.println("-------------------------Ciclo error diferente de 0-----------------------");
         Serial.print("Error = ");
         Serial.println(error);
         error_ant=error;
-        error = 37.38 - Obtener_Posicion();
+        error = 12.74 - Obtener_Posicion();
         error_p = Kp*error;
         error_i = Ki*error + error_i;
         error_d = Kd*(error-error_ant);
@@ -221,17 +239,22 @@ boolean ajustar_posicion(float posicion_inicial,int piso){
         Serial.println(error_d);
         Serial.print("PWM VALOR ");
         Serial.println(PWM_valor);
-        delay(5000);
         if(error>0){
-          Serial.println("AJUSTANDO SUBIENDO");
-          //subir
+          println("S U B I E N D O");
+        }else{
+          println("B A J A N D O");
         }
-        if(error<0){
-          Serial.println("AJUSTANDO BAJANDO");
-          //bajar
-        }
+        Ajuste_motor(PWM_valor);
+        delay(300);
+          digitalWrite (IN3, HIGH);
+          digitalWrite (IN4, LOW);
+          analogWrite(ENB,motor_estable);
         if((int)error==0){
           Serial.println("AJUSTADO");
+          digitalWrite (IN3, HIGH);
+          digitalWrite (IN4, LOW);
+          analogWrite(ENB,motor_estable);
+          break;
         }
         Serial.print("/////////////////////Errror a comparara/////////////////////////////// ");
         Serial.println(error,4);
@@ -239,15 +262,13 @@ boolean ajustar_posicion(float posicion_inicial,int piso){
     break;
   }
   Serial.println("******* SALIENDO *******");
-  return true;
 }
-void Ajuste_motor(){
-  delay(1000);
-  //motor
-  digitalWrite (IN3, HIGH);
-  digitalWrite (IN4, LOW);
-  analogWrite(ENB,255);
-  delay(1000);
-  // Apagamos el motor y esperamos 5 seg
-  //analogWrite(ENB,0);
+void Ajuste_motor(int pwd){
+  //digitalWrite (IN3, HIGH);
+  //digitalWrite (IN4, LOW);
+  
+  //Serial.print("$$$$$$$$$$ SE MANDA AL MOTOR = ");
+  //Serial.println(pwd+190);
+  //analogWrite(ENB,pwd+190);
+  //delay(50);
 }
