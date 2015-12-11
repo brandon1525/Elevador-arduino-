@@ -8,9 +8,9 @@ int ENB = 3;    // ENB conectada al pin 3 de Arduino
 int estado=1;
 int PWM_valor=0;
 //Pues ki menor que 1 Kd menor a 2 y kp menor a 15Kp   .2 Kd   .1 Ki    .00001
-const float Kp=.2,Ki=.00001,Kd=.1;// son constantes pero flotantes y esas hay que estarlas moviendo para sintonizar el PID
+const float Kp=.31,Ki=.00011,Kd=.31;// son constantes pero flotantes y esas hay que estarlas moviendo para sintonizar el PID
 float error_ant,error=1,error_p,error_i,error_d;
-int motor_estable=170;
+int motor_estable=185;
 
 void setup()
 {
@@ -112,18 +112,19 @@ void ajustar_posicion(float posicion_inicial,int piso){
           PWM_valor=85-PWM_valor;
         }else{
           Serial.println("S U B I E N D O");
-          PWM_valor=255+PWM_valor;
+          PWM_valor=210+PWM_valor;
         }
         Ajuste_motor(PWM_valor);
-        delay(100);
+        delay(90);
         digitalWrite (IN3, HIGH);
         digitalWrite (IN4, LOW);
         analogWrite(ENB,motor_estable);
+        delay(200);
         if((int)error==0){
           Serial.println("AJUSTADO");
           digitalWrite (IN3, HIGH);
           digitalWrite (IN4, LOW);
-          analogWrite(ENB,motor_estable);
+          analogWrite(ENB,motor_estable-20);
           break;
         }
         Serial.print("/////////////////////Errror a comparara/////////////////////////////// ");
@@ -136,7 +137,7 @@ void ajustar_posicion(float posicion_inicial,int piso){
         Serial.print("Error = ");
         Serial.println(error);
         error_ant=error;
-        error = 31.98 - Obtener_Posicion();
+        error = 38.01 - Obtener_Posicion();
         error_p = Kp*error;
         error_i = Ki*error + error_i;
         error_d = Kd*(error-error_ant);
@@ -153,18 +154,19 @@ void ajustar_posicion(float posicion_inicial,int piso){
         Serial.println(error_d);
         Serial.print("PWM VALOR ");
         Serial.println(PWM_valor);
-        if(error>0){
+       if(error>0){
           Serial.println("B A J A N D O");
-          
+          PWM_valor=85-PWM_valor;
         }else{
-          
           Serial.println("S U B I E N D O");
+          PWM_valor=210+PWM_valor;
         }
         Ajuste_motor(PWM_valor);
-        delay(300);
+        delay(90);
         digitalWrite (IN3, HIGH);
         digitalWrite (IN4, LOW);
         analogWrite(ENB,motor_estable);
+        delay(200);
         if((int)error==0){
           Serial.println("AJUSTADO");
           digitalWrite (IN3, HIGH);
@@ -182,7 +184,7 @@ void ajustar_posicion(float posicion_inicial,int piso){
         Serial.print("Error = ");
         Serial.println(error);
         error_ant=error;
-        error = 20.98 - Obtener_Posicion();
+        error = 22.88 - Obtener_Posicion();
         error_p = Kp*error;
         error_i = Ki*error + error_i;
         error_d = Kd*(error-error_ant);
@@ -201,16 +203,17 @@ void ajustar_posicion(float posicion_inicial,int piso){
         Serial.println(PWM_valor);
         if(error>0){
           Serial.println("B A J A N D O");
-          
+          PWM_valor=85-PWM_valor;
         }else{
-          
           Serial.println("S U B I E N D O");
+          PWM_valor=210+PWM_valor;
         }
         Ajuste_motor(PWM_valor);
-        delay(300);
+        delay(90);
         digitalWrite (IN3, HIGH);
         digitalWrite (IN4, LOW);
         analogWrite(ENB,motor_estable);
+        delay(200);
         if((int)error==0){
           Serial.println("AJUSTADO");
           digitalWrite (IN3, HIGH);
@@ -228,7 +231,7 @@ void ajustar_posicion(float posicion_inicial,int piso){
         Serial.print("Error = ");
         Serial.println(error);
         error_ant=error;
-        error = 12.74 - Obtener_Posicion();
+        error = 11.74 - Obtener_Posicion();
         error_p = Kp*error;
         error_i = Ki*error + error_i;
         error_d = Kd*(error-error_ant);
@@ -247,16 +250,17 @@ void ajustar_posicion(float posicion_inicial,int piso){
         Serial.println(PWM_valor);
         if(error>0){
           Serial.println("B A J A N D O");
-          
+          PWM_valor=85-PWM_valor;
         }else{
-          
           Serial.println("S U B I E N D O");
+          PWM_valor=220+PWM_valor;
         }
         Ajuste_motor(PWM_valor);
-        delay(300);
-          digitalWrite (IN3, HIGH);
-          digitalWrite (IN4, LOW);
-          analogWrite(ENB,motor_estable);
+        delay(90);
+        digitalWrite (IN3, HIGH);
+        digitalWrite (IN4, LOW);
+        analogWrite(ENB,motor_estable);
+        delay(200);
         if((int)error==0){
           Serial.println("AJUSTADO");
           digitalWrite (IN3, HIGH);
@@ -272,11 +276,11 @@ void ajustar_posicion(float posicion_inicial,int piso){
   Serial.println("******* SALIENDO *******");
 }
 void Ajuste_motor(int pwd){
-  //digitalWrite (IN3, HIGH);
-  //digitalWrite (IN4, LOW);
+  digitalWrite (IN3, HIGH);
+  digitalWrite (IN4, LOW);
   
-  //Serial.print("$$$$$$$$$$ SE MANDA AL MOTOR = ");
-  //Serial.println(pwd+190);
-  //analogWrite(ENB,pwd+190);
-  //delay(50);
+  Serial.print("$$$$$$$$$$ SE MANDA AL MOTOR = ");
+  Serial.println(pwd);
+  analogWrite(ENB,pwd);
+  delay(100);
 }
